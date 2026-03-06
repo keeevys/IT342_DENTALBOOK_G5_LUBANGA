@@ -79,14 +79,6 @@
 | password   | VARCHAR(255) | NOT NULL (BCrypt hashed)     |
 | created_at | DATETIME     | NOT NULL                     |
 
-## Setup Instructions
-
-### Prerequisites
-1. Java 17 or higher
-2. Maven
-3. MySQL Server
-4. Node.js and npm
-
 ### Backend Setup
 
 1. **Configure Database**
@@ -127,20 +119,20 @@
 ## Features Implemented
 
 ### User Registration
-- ✅ Full name, email, and password fields
-- ✅ Field validation (required fields, email format, password length)
-- ✅ Duplicate email prevention
-- ✅ Password hashing using BCrypt
-- ✅ Database storage with timestamp
-- ✅ Success/error message display
+-  Full name, email, and password fields
+-  Field validation (required fields, email format, password length)
+-  Duplicate email prevention
+-  Password hashing using BCrypt
+-  Database storage with timestamp
+-  Success/error message display
 
 ### User Login
-- ✅ Email and password authentication
-- ✅ Credential validation against database
-- ✅ Password verification using BCrypt
-- ✅ Invalid credentials handling
-- ✅ Redirect to dashboard on success
-- ✅ User session storage in localStorage
+-  Email and password authentication
+-  Credential validation against database
+-  Password verification using BCrypt
+-  Invalid credentials handling
+-  Redirect to dashboard on success
+-  User session storage in localStorage
 
 ## Security Implementation
 
@@ -159,84 +151,6 @@
 - Configured to allow requests from React frontend (localhost:3000)
 - Restricted to specific HTTP methods: GET, POST, PUT, DELETE
 
-## Testing the System
-
-### Test Scenario 1: User Registration
-1. Navigate to http://localhost:3000/register
-2. Fill in the form:
-   - Full Name: "Test User"
-   - Email: "test@example.com"
-   - Password: "test123"
-3. Click "Register"
-4. Expected: Success message and redirect to login
-
-### Test Scenario 2: Duplicate Email Prevention
-1. Try to register with the same email again
-2. Expected: Error message "Email already registered"
-
-### Test Scenario 3: User Login
-1. Navigate to http://localhost:3000/login
-2. Enter registered credentials:
-   - Email: "test@example.com"
-   - Password: "test123"
-3. Click "Login"
-4. Expected: Redirect to dashboard with welcome message
-
-### Test Scenario 4: Invalid Login
-1. Try to login with wrong password
-2. Expected: Error message "Invalid email or password"
-
-### Test Scenario 5: Database Verification
-1. Open MySQL and query the database:
-   ```sql
-   USE dentalbook_db;
-   SELECT * FROM users;
-   ```
-2. Expected: See registered users with hashed passwords
-
-## Project Structure
-
-```
-IT342_DENTALBOOK_G5_LUBANGA/
-├── backend/
-│   └── dentalbook/
-│       ├── src/
-│       │   └── main/
-│       │       ├── java/
-│       │       │   └── edu/cit/lubanga/dentalbook/
-│       │       │       ├── config/
-│       │       │       │   ├── CorsConfig.java
-│       │       │       │   └── SecurityConfig.java
-│       │       │       ├── controller/
-│       │       │       │   └── AuthController.java
-│       │       │       ├── dto/
-│       │       │       │   ├── AuthResponse.java
-│       │       │       │   ├── LoginRequest.java
-│       │       │       │   └── RegisterRequest.java
-│       │       │       ├── entity/
-│       │       │       │   └── User.java
-│       │       │       ├── repository/
-│       │       │       │   └── UserRepository.java
-│       │       │       ├── service/
-│       │       │       │   └── UserService.java
-│       │       │       └── DentalbookApplication.java
-│       │       └── resources/
-│       │           └── application.properties
-│       └── pom.xml
-└── web/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Dashboard.js
-    │   │   ├── Dashboard.css
-    │   │   ├── Login.js
-    │   │   ├── Login.css
-    │   │   ├── Register.js
-    │   │   └── Register.css
-    │   ├── App.js
-    │   └── index.js
-    └── package.json
-```
-
 ## Screenshots for Submission
 
 Required screenshots:
@@ -245,23 +159,3 @@ Required screenshots:
 3. Login page
 4. Successful login with dashboard
 5. MySQL database showing registered user with hashed password
-
-## Git Commit Message
-
-```
-IT342 Phase 1 – User Registration and Login Completed
-
-- Implemented User entity with validation
-- Created secure password hashing using BCrypt
-- Built REST API endpoints for auth
-- Developed React registration and login pages
-- Configured MySQL database integration
-- Added duplicate email prevention
-- Implemented session management
-```
-
-## Contributors
-- Group 5 - Lubanga
-
-## License
-Educational Project - IT342
