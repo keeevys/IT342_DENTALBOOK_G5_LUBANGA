@@ -127,20 +127,20 @@
 ## Features Implemented
 
 ### User Registration
-- ✅ Full name, email, and password fields
-- ✅ Field validation (required fields, email format, password length)
-- ✅ Duplicate email prevention
-- ✅ Password hashing using BCrypt
-- ✅ Database storage with timestamp
-- ✅ Success/error message display
+-  Full name, email, and password fields
+-  Field validation (required fields, email format, password length)
+-  Duplicate email prevention
+-  Password hashing using BCrypt
+-  Database storage with timestamp
+-  Success/error message display
 
 ### User Login
-- ✅ Email and password authentication
-- ✅ Credential validation against database
-- ✅ Password verification using BCrypt
-- ✅ Invalid credentials handling
-- ✅ Redirect to dashboard on success
-- ✅ User session storage in localStorage
+-  Email and password authentication
+-  Credential validation against database
+-  Password verification using BCrypt
+-  Invalid credentials handling
+-  Redirect to dashboard on success
+-  User session storage in localStorage
 
 ## Security Implementation
 
