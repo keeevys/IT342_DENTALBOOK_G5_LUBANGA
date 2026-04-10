@@ -4,7 +4,7 @@
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 100%);
   color: white;
   padding: 20px 40px;
   display: flex;
@@ -20,7 +20,7 @@
 
 .btn-logout {
   background: white;
-  color: #667eea;
+  color: #1e3a8a;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -85,7 +85,7 @@
 
 .info-card h3 {
   margin: 0 0 10px 0;
-  color: #667eea;
+  color: #1e3a8a;
 }
 
 .info-card p {

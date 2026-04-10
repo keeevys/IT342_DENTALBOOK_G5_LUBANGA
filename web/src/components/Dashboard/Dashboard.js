@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabaseClient';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -7,17 +8,56 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    } else {
-      // Redirect to login if not logged in
-      navigate('/login');
-    }
+    let isMounted = true;
+    let subscription = null;
+
+    const loadUser = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const session = sessionData?.session;
+
+      if (!session?.user) {
+        navigate('/login');
+        return;
+      }
+
+      const currentUser = session.user;
+      if (isMounted) {
+        setUser({
+          fullName: currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || 'User',
+          email: currentUser.email,
+          message: 'Signed in with Supabase',
+        });
+      }
+
+      const { data } = supabase.auth.onAuthStateChange((_event, newSession) => {
+        if (!newSession?.user) {
+          navigate('/login');
+          return;
+        }
+
+        const nextUser = newSession.user;
+        if (isMounted) {
+          setUser({
+            fullName: nextUser.user_metadata?.full_name || nextUser.user_metadata?.name || 'User',
+            email: nextUser.email,
+            message: 'Signed in with Supabase',
+          });
+        }
+      });
+
+      subscription = data.subscription;
+    };
+
+    loadUser();
+
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem('user');
     navigate('/login');
   };

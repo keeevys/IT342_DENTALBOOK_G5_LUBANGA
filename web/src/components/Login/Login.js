@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabaseClient';
 import './Login.css';
 
 function Login() {
@@ -25,26 +26,25 @@ function Login() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(data));
+      if (signInError) {
+        setError(signInError.message);
+      } else if (data?.session) {
+        const user = data.session.user;
+        localStorage.setItem('user', JSON.stringify({
+          fullName: user.user_metadata?.full_name || user.user_metadata?.name || '',
+          email: user.email,
+          message: 'Login successful'
+        }));
         alert('Login successful!');
         navigate('/dashboard');
-      } else {
-        setError(data.error || 'Login failed');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Network error. Please try again.');
     } finally {
       setLoading(false);
     }
