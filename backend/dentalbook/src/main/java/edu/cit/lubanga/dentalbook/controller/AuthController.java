@@ -52,6 +52,17 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
     }
+
+    /**
+     * POST /api/auth/logout
+     * Draft logout endpoint. The current app uses client-side sessions.
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logout successful (draft)");
+        return ResponseEntity.ok(response);
+    }
     
     /**
      * GET /api/auth/test
