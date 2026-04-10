@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabaseClient';
 import './Register.css';
 
 function Register() {
@@ -33,24 +34,24 @@ function Register() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+          },
         },
-        body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert('Registration successful! Please login.');
+      if (signUpError) {
+        setError(signUpError.message);
+      } else if (data?.user) {
+        alert(data.session ? 'Registration successful!' : 'Registration successful! Please check your email to confirm your account.');
         navigate('/login');
-      } else {
-        setError(data.error || 'Registration failed');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Network error. Please try again.');
     } finally {
       setLoading(false);
     }
