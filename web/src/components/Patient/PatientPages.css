@@ -132,6 +132,56 @@
   background: linear-gradient(180deg, #ffffff, #fbfcfe);
 }
 
+/* Service card layout for patient appointments */
+.service-card {
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(180deg, #d6e9f8, #bcdaf4);
+  border-radius: 8px;
+}
+
+.service-card-media {
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-media-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff, rgba(255,255,255,0.3));
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #183153;
+  font-size: 20px;
+  border: 1px solid rgba(24,49,83,0.06);
+}
+
+.service-card-body {
+  flex: 1 1 auto;
+}
+
+.service-card-actions {
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-description {
+  margin: 8px 0;
+  color: #183153;
+}
+
+.service-price {
+  margin: 0 0 8px;
+  font-weight: 800;
+  color: #0b4a6f;
+}
+
 .patient-appointment-item h3 {
   margin: 0 0 8px;
   color: #183153;
@@ -205,5 +255,19 @@
   .patient-avatar-preview {
     width: 140px;
     height: 140px;
+  }
+}
+
+@media (max-width: 700px) {
+  .service-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .service-card-media,
+  .service-card-actions {
+    flex: none;
+    justify-content: flex-start;
   }
 }

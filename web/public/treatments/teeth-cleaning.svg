@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Teeth Cleaning">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#e4f8ef"/>
+      <stop offset="100%" stop-color="#98d8be"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="24" fill="url(#bg)"/>
+  <path d="M144 130c0-42 34-76 76-76s76 34 76 76c0 78-38 132-76 132s-76-54-76-132z" fill="#fff"/>
+  <path d="M180 132c14 0 18 14 18 32 0 20-6 50-18 80-12-30-18-60-18-80 0-18 4-32 18-32zm56 0c14 0 18 14 18 32 0 20-6 50-18 80-12-30-18-60-18-80 0-18 4-32 18-32z" fill="#dff2ea"/>
+  <circle cx="336" cy="112" r="28" fill="#5fbf9f"/>
+  <path d="M336 82l8 20 20 8-20 8-8 20-8-20-20-8 20-8z" fill="#fff"/>
+  <text x="240" y="318" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#0f2a40">Clean</text>
+</svg>

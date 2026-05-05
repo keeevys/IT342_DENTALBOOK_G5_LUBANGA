@@ -17,7 +17,7 @@ export const readAppointments = () => {
       id: appointment.id ?? appointment.appointmentId ?? Date.now(),
       userEmail: appointment.userEmail ?? '',
       userName: appointment.userName ?? appointment.patientName ?? 'Patient',
-      service: appointment.service ?? 'General Checkup',
+      service: appointment.service ?? 'Orthodontic Treatment',
       date: appointment.date ?? appointment.appointmentDate ?? '',
       time: appointment.time ?? appointment.appointmentTime ?? '',
       notes: appointment.notes ?? '',

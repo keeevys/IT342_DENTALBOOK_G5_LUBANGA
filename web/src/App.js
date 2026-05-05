@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
+import BookingPage from './components/Booking/BookingPage';
 import PatientAppointments from './components/Patient/PatientAppointments';
 import PatientRecords from './components/Patient/PatientRecords';
 import PatientSettings from './components/Patient/PatientSettings';
@@ -74,6 +75,7 @@ REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={renderPatientRoute(storedUser, hasAdminAccess, <Dashboard />)} />
+          <Route path="/book" element={renderPatientRoute(storedUser, hasAdminAccess, <BookingPage />)} />
           <Route path="/appointments" element={renderPatientRoute(storedUser, hasAdminAccess, <PatientAppointments />)} />
           <Route path="/records" element={renderPatientRoute(storedUser, hasAdminAccess, <PatientRecords />)} />
           <Route path="/settings" element={renderPatientRoute(storedUser, hasAdminAccess, <PatientSettings />)} />

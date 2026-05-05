@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getStoredUser, isAdminUser } from '../../lib/accessControl';
-import { readAppointments, sortAppointments, writeAppointments } from '../../lib/appointmentsStore';
+import { SERVICES } from '../../lib/servicesCatalog';
 import PatientFrame from '../Patient/PatientFrame';
 import '../Patient/PatientPages.css';
 import './Dashboard.css';
 
 function Dashboard() {
   const [user, setUser] = useState(null);
-  const [appointments, setAppointments] = useState([]);
-  const [bookingStatus, setBookingStatus] = useState('');
-  const [bookingForm, setBookingForm] = useState({
-    service: 'General Checkup',
-    date: '',
-    time: '',
-    notes: ''
-  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,134 +31,59 @@ function Dashboard() {
     });
   }, [navigate]);
 
-  useEffect(() => {
-    if (!user?.email) {
-      setAppointments([]);
-      return;
-    }
-
-    const currentAppointments = readAppointments().filter((appointment) => appointment.userEmail === user.email);
-    setAppointments(sortAppointments(currentAppointments));
-  }, [user]);
-
-  const persistAppointments = (nextAppointments) => {
-    if (!user?.email) {
-      return;
-    }
-
-    const allAppointments = readAppointments();
-    const otherAppointments = allAppointments.filter((appointment) => appointment.userEmail !== user.email);
-    const nextAllAppointments = sortAppointments([...otherAppointments, ...nextAppointments]);
-
-    writeAppointments(nextAllAppointments);
-    setAppointments(sortAppointments(nextAppointments));
-  };
-
-  const handleBookingChange = (event) => {
-    const { name, value } = event.target;
-    setBookingForm((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-    setBookingStatus('');
-  };
-
-  const handleBookAppointment = (event) => {
-    event.preventDefault();
-
-    if (!bookingForm.date || !bookingForm.time) {
-      setBookingStatus('Please select both date and time.');
-      return;
-    }
-
-    const newAppointment = {
-      id: Date.now(),
-      userEmail: user.email,
-      userName: user.fullName,
-      service: bookingForm.service,
-      date: bookingForm.date,
-      time: bookingForm.time,
-      notes: bookingForm.notes.trim(),
-      status: 'PENDING',
-      createdAt: new Date().toISOString(),
-    };
-
-    const nextAppointments = [newAppointment, ...appointments];
-    persistAppointments(nextAppointments);
-
-    setBookingForm({
-      service: 'General Checkup',
-      date: '',
-      time: '',
-      notes: ''
-    });
-    setBookingStatus('Appointment booked and submitted for review.');
-  };
-
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
     <PatientFrame>
-      <section className="patient-page-card">
+      <section className="patient-page-card patient-book-page">
         <div className="patient-page-header">
-          <p className="patient-page-eyebrow">Book Appointment</p>
-          <h1>Schedule your visit</h1>
-          <p>Choose a service, date, and time, then submit your booking for review.</p>
+          <p className="patient-page-eyebrow">Select Appointment</p>
+          <h1>Select Calendar</h1>
+          <p>Choose a treatment below to open the booking page.</p>
         </div>
 
-        <section className="appointment-card appointment-card-full">
-            <h3>Book Appointment</h3>
-            <form onSubmit={handleBookAppointment} className="booking-form">
-              <label htmlFor="service">Service</label>
-              <select
-                id="service"
-                name="service"
-                value={bookingForm.service}
-                onChange={handleBookingChange}
-              >
-                <option value="General Checkup">General Checkup</option>
-                <option value="Teeth Cleaning">Teeth Cleaning</option>
-                <option value="Tooth Extraction">Tooth Extraction</option>
-                <option value="Dental Filling">Dental Filling</option>
-                <option value="Consultation">Consultation</option>
-              </select>
+        <section className="appointment-card appointment-card-full booking-services-section">
+          <div className="booking-services-list">
+            {Object.entries(SERVICES).map(([serviceName, serviceInfo], index) => {
+              const initials = serviceName
+                .split(' ')
+                .slice(0, 2)
+                .map((part) => part[0])
+                .join('')
+                .toUpperCase();
 
-              <label htmlFor="date">Date</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={bookingForm.date}
-                onChange={handleBookingChange}
-                required
-              />
+              return (
+                <article key={serviceName} className="booking-service-card">
+                  <div className="booking-service-image">
+                    <img src={serviceInfo.image} alt={serviceName} className="booking-service-photo" />
+                    <div className="booking-service-image-badge">{initials}</div>
+                    <div className="booking-service-image-ribbon">{index === 0 ? 'Featured' : 'Dental Care'}</div>
+                  </div>
 
-              <label htmlFor="time">Time</label>
-              <input
-                type="time"
-                id="time"
-                name="time"
-                value={bookingForm.time}
-                onChange={handleBookingChange}
-                required
-              />
+                  <div className="booking-service-copy">
+                    <h3>{serviceName}</h3>
+                    <p>{serviceInfo.description}</p>
+                    <strong>{serviceInfo.price}</strong>
+                  </div>
 
-              <label htmlFor="notes">Notes (optional)</label>
-              <textarea
-                id="notes"
-                name="notes"
-                value={bookingForm.notes}
-                onChange={handleBookingChange}
-                placeholder="Any concerns to tell your dentist?"
-                rows={3}
-              />
-
-              <button type="submit" className="btn-book">Book Appointment</button>
-            </form>
-            {bookingStatus && <p className="booking-status">{bookingStatus}</p>}
-          </section>
+                  <div className="booking-service-actions">
+                    <button
+                      type="button"
+                      className="booking-service-button"
+                      onClick={() => {
+                        navigate(`/book?service=${encodeURIComponent(serviceName)}`);
+                      }}
+                    >
+                      BOOK
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
       </section>
     </PatientFrame>
   );

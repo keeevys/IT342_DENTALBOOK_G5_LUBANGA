@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getStoredUser, isAdminUser } from '../../lib/accessControl';
 import { readAppointments, sortAppointments, writeAppointments } from '../../lib/appointmentsStore';
+import { SERVICES } from '../../lib/servicesCatalog';
 import PatientFrame from './PatientFrame';
 import './PatientPages.css';
 
@@ -61,24 +62,44 @@ function PatientAppointments() {
           <div className="patient-empty-state">No appointments yet.</div>
         ) : (
           <ul className="patient-appointment-list">
-            {appointments.map((appointment) => (
-              <li key={appointment.id} className="patient-appointment-item">
-                <div>
-                  <h3>{appointment.service}</h3>
-                  <p>{appointment.date} at {appointment.time}</p>
-                  <p className={`patient-status status-${String(appointment.status || 'PENDING').toLowerCase()}`}>
-                    {appointment.status}
-                  </p>
-                  {appointment.notes && <p className="patient-notes">Notes: {appointment.notes}</p>}
-                </div>
+            {appointments.map((appointment) => {
+              const meta = SERVICES[appointment.service] || {};
+              const description = meta.description || 'No description available.';
+              const price = meta.price || '';
+              const initials = (appointment.service || '')
+                .split(' ')
+                .slice(0, 2)
+                .map((s) => s[0])
+                .join('')
+                .toUpperCase();
 
-                {appointment.status !== 'CANCELLED' && appointment.status !== 'REJECTED' && (
-                  <button type="button" className="btn-cancel" onClick={() => handleCancel(appointment.id)}>
-                    Cancel
-                  </button>
-                )}
-              </li>
-            ))}
+              return (
+                <li key={appointment.id} className="patient-appointment-item service-card">
+                  <div className="service-card-media">
+                    <div className="service-media-placeholder">{initials}</div>
+                  </div>
+
+                  <div className="service-card-body">
+                    <h3>{appointment.service}</h3>
+                    <p className="service-description">{description}</p>
+                    <p className="service-price">{price}</p>
+                    <p className="service-datetime">{appointment.date} at {appointment.time}</p>
+                    <p className={`patient-status status-${String(appointment.status || 'PENDING').toLowerCase()}`}>
+                      {appointment.status}
+                    </p>
+                    {appointment.notes && <p className="patient-notes">Notes: {appointment.notes}</p>}
+                  </div>
+
+                  <div className="service-card-actions">
+                    {appointment.status !== 'CANCELLED' && appointment.status !== 'REJECTED' && (
+                      <button type="button" className="btn-cancel" onClick={() => handleCancel(appointment.id)}>
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
