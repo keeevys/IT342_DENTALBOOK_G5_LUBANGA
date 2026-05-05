@@ -62,9 +62,15 @@
 }
 
 .patient-sidebar-footer {
-  margin-top: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 320px;
+  padding: 14px 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(247, 250, 255, 1) 60%);
   display: grid;
   gap: 14px;
+  z-index: 100;
 }
 
 .patient-sidebar-user {
@@ -130,5 +136,12 @@
     border-right: none;
     border-bottom: 1px solid #e3e8f1;
     box-shadow: 0 12px 28px rgba(26, 40, 68, 0.08);
+  }
+
+  .patient-sidebar-footer {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    padding: 14px 24px;
   }
 }

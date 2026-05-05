@@ -46,9 +46,6 @@ function Sidebar() {
         <NavLink to="/records" className={({ isActive }) => `patient-sidebar-link ${isActive ? 'active' : ''}`}>
           Records
         </NavLink>
-        <NavLink to="/settings" className={({ isActive }) => `patient-sidebar-link ${isActive ? 'active' : ''}`}>
-          Settings
-        </NavLink>
         <NavLink to="/profile" className={({ isActive }) => `patient-sidebar-link ${isActive ? 'active' : ''}`}>
           Profile
         </NavLink>

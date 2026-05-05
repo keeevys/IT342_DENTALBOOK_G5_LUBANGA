@@ -65,7 +65,6 @@ function Dashboard() {
                   <div className="booking-service-copy">
                     <h3>{serviceName}</h3>
                     <p>{serviceInfo.description}</p>
-                    <strong>{serviceInfo.price}</strong>
                   </div>
 
                   <div className="booking-service-actions">

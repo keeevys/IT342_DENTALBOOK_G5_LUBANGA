@@ -65,7 +65,6 @@ function PatientAppointments() {
             {appointments.map((appointment) => {
               const meta = SERVICES[appointment.service] || {};
               const description = meta.description || 'No description available.';
-              const price = meta.price || '';
               const initials = (appointment.service || '')
                 .split(' ')
                 .slice(0, 2)
@@ -82,7 +81,6 @@ function PatientAppointments() {
                   <div className="service-card-body">
                     <h3>{appointment.service}</h3>
                     <p className="service-description">{description}</p>
-                    <p className="service-price">{price}</p>
                     <p className="service-datetime">{appointment.date} at {appointment.time}</p>
                     <p className={`patient-status status-${String(appointment.status || 'PENDING').toLowerCase()}`}>
                       {appointment.status}
