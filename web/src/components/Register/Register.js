@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
+import { ADMIN_EMAIL } from '../../lib/accessControl';
 import './Register.css';
 
 function Register() {
@@ -29,6 +30,12 @@ function Register() {
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.email.trim().toLowerCase() === ADMIN_EMAIL) {
+      setError('This email is reserved for clinic admin access.');
       setLoading(false);
       return;
     }

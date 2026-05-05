@@ -1,0 +1,22 @@
+.patient-frame {
+  min-height: calc(100vh - 88px);
+  display: flex;
+  background: #f4f7fb;
+}
+
+.patient-content {
+  flex: 1;
+  min-width: 0;
+  padding: 40px;
+}
+
+@media (max-width: 900px) {
+  .patient-frame {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .patient-content {
+    padding: 20px;
+  }
+}

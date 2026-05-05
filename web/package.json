@@ -14,6 +14,18 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "overrides": {
+    "@tootallnate/once": "^3.0.1",
+    "nth-check": "^2.1.1",
+    "postcss": "^8.5.10",
+    "serialize-javascript": "^7.0.5",
+    "sockjs": {
+      "uuid": "^14.0.0"
+    },
+    "underscore": "^1.13.8",
+    "uuid": "^14.0.0",
+    "yaml": "^2.8.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

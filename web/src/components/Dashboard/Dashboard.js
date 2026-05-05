@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
+import { getStoredUser, isAdminUser } from '../../lib/accessControl';
+import { readAppointments, sortAppointments, writeAppointments } from '../../lib/appointmentsStore';
+import PatientFrame from '../Patient/PatientFrame';
+import '../Patient/PatientPages.css';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -15,85 +18,48 @@ function Dashboard() {
   });
   const navigate = useNavigate();
 
-  const storageKey = user ? `appointments-draft-${user.email}` : null;
-
   useEffect(() => {
-    let isMounted = true;
-    let subscription = null;
+    const storedUser = getStoredUser();
 
-    const loadUser = async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const session = sessionData?.session;
+    if (!storedUser) {
+      navigate('/login');
+      return;
+    }
 
-      if (!session?.user) {
-        navigate('/login');
-        return;
-      }
+    if (isAdminUser(storedUser)) {
+      navigate('/admin/dashboard');
+      return;
+    }
 
-      const currentUser = session.user;
-      if (isMounted) {
-        setUser({
-          fullName: currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || 'User',
-          email: currentUser.email,
-          message: 'Signed in with Supabase',
-        });
-      }
-
-      const { data } = supabase.auth.onAuthStateChange((_event, newSession) => {
-        if (!newSession?.user) {
-          navigate('/login');
-          return;
-        }
-
-        const nextUser = newSession.user;
-        if (isMounted) {
-          setUser({
-            fullName: nextUser.user_metadata?.full_name || nextUser.user_metadata?.name || 'User',
-            email: nextUser.email,
-            message: 'Signed in with Supabase',
-          });
-        }
-      });
-
-      subscription = data.subscription;
-    };
-
-    loadUser();
-
-    return () => {
-      isMounted = false;
-      subscription?.unsubscribe();
-    };
+    setUser({
+      fullName: storedUser.fullName || 'User',
+      email: storedUser.email,
+      role: 'patient',
+      message: 'Signed in successfully',
+    });
   }, [navigate]);
 
   useEffect(() => {
-    if (!storageKey) {
-      return;
-    }
-
-    const rawAppointments = localStorage.getItem(storageKey);
-    if (!rawAppointments) {
+    if (!user?.email) {
       setAppointments([]);
       return;
     }
 
-    try {
-      const parsedAppointments = JSON.parse(rawAppointments);
-      setAppointments(Array.isArray(parsedAppointments) ? parsedAppointments : []);
-    } catch (error) {
-      setAppointments([]);
-      localStorage.removeItem(storageKey);
-      console.warn('Failed to parse draft appointments from localStorage.', error);
-    }
-  }, [storageKey]);
+    const currentAppointments = readAppointments().filter((appointment) => appointment.userEmail === user.email);
+    setAppointments(sortAppointments(currentAppointments));
+  }, [user]);
 
   const persistAppointments = (nextAppointments) => {
-    if (!storageKey) {
+    if (!user?.email) {
       return;
     }
 
-    localStorage.setItem(storageKey, JSON.stringify(nextAppointments));
-    setAppointments(nextAppointments);
+    const allAppointments = readAppointments();
+    const otherAppointments = allAppointments.filter((appointment) => appointment.userEmail !== user.email);
+    const nextAllAppointments = sortAppointments([...otherAppointments, ...nextAppointments]);
+
+    writeAppointments(nextAllAppointments);
+    setAppointments(sortAppointments(nextAppointments));
   };
 
   const handleBookingChange = (event) => {
@@ -115,11 +81,13 @@ function Dashboard() {
 
     const newAppointment = {
       id: Date.now(),
+      userEmail: user.email,
+      userName: user.fullName,
       service: bookingForm.service,
       date: bookingForm.date,
       time: bookingForm.time,
       notes: bookingForm.notes.trim(),
-      status: 'Booked',
+      status: 'PENDING',
       createdAt: new Date().toISOString(),
     };
 
@@ -132,19 +100,7 @@ function Dashboard() {
       time: '',
       notes: ''
     });
-    setBookingStatus('Appointment booked (draft mode).');
-  };
-
-  const handleCancelAppointment = (appointmentId) => {
-    const nextAppointments = appointments.filter((appointment) => appointment.id !== appointmentId);
-    persistAppointments(nextAppointments);
-    setBookingStatus('Appointment canceled.');
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    localStorage.removeItem('user');
-    navigate('/login');
+    setBookingStatus('Appointment booked and submitted for review.');
   };
 
   if (!user) {
@@ -152,22 +108,15 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>DentalBook Dashboard</h1>
-        <button onClick={handleLogout} className="btn-logout">Logout</button>
-      </div>
-      
-      <div className="dashboard-content">
-        <div className="welcome-card">
-          <h2>Welcome, {user.fullName}!</h2>
-          <p>Email: {user.email}</p>
-          <p className="success-message">{user.message}</p>
-          <p className="draft-label">Draft Mode: appointments are stored locally for now.</p>
+    <PatientFrame>
+      <section className="patient-page-card">
+        <div className="patient-page-header">
+          <p className="patient-page-eyebrow">Book Appointment</p>
+          <h1>Schedule your visit</h1>
+          <p>Choose a service, date, and time, then submit your booking for review.</p>
         </div>
 
-        <div className="appointment-grid">
-          <section className="appointment-card">
+        <section className="appointment-card appointment-card-full">
             <h3>Book Appointment</h3>
             <form onSubmit={handleBookAppointment} className="booking-form">
               <label htmlFor="service">Service</label>
@@ -218,49 +167,8 @@ function Dashboard() {
             </form>
             {bookingStatus && <p className="booking-status">{bookingStatus}</p>}
           </section>
-
-          <section className="appointment-card">
-            <h3>Your Appointments</h3>
-            {appointments.length === 0 ? (
-              <p className="empty-appointments">No appointments yet.</p>
-            ) : (
-              <ul className="appointment-list">
-                {appointments.map((appointment) => (
-                  <li key={appointment.id} className="appointment-item">
-                    <div>
-                      <p className="appointment-service">{appointment.service}</p>
-                      <p>{appointment.date} at {appointment.time}</p>
-                      {appointment.notes && <p className="appointment-notes">Notes: {appointment.notes}</p>}
-                    </div>
-                    <button
-                      onClick={() => handleCancelAppointment(appointment.id)}
-                      className="btn-cancel"
-                    >
-                      Cancel
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </div>
-
-        <div className="info-cards">
-          <div className="info-card">
-            <h3>Appointments</h3>
-            <p>Book, view, and cancel appointments in draft mode</p>
-          </div>
-          <div className="info-card">
-            <h3>Records</h3>
-            <p>Access your dental records</p>
-          </div>
-          <div className="info-card">
-            <h3>Settings</h3>
-            <p>Update your profile settings</p>
-          </div>
-        </div>
-      </div>
-    </div>
+      </section>
+    </PatientFrame>
   );
 }
 

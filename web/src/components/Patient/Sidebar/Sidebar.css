@@ -1,0 +1,134 @@
+.patient-sidebar {
+  flex: 0 0 320px;
+  width: 320px;
+  min-height: calc(100vh - 88px);
+  position: sticky;
+  top: 0;
+  padding: 28px 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+  border-right: 1px solid #e3e8f1;
+  box-shadow: 12px 0 28px rgba(26, 40, 68, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.patient-sidebar-title {
+  margin: 4px 0 6px;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 0.95;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: transparent;
+  background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 55%, #0f766e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 8px 18px rgba(30, 58, 138, 0.14);
+}
+
+.patient-sidebar-brand h2 {
+  margin: 4px 0 6px;
+  color: #183153;
+  font-size: 22px;
+}
+
+.patient-sidebar-brand p {
+  margin: 0;
+  color: #62748b;
+}
+
+.patient-sidebar-nav {
+  display: grid;
+  gap: 10px;
+}
+
+.patient-sidebar-link {
+  display: block;
+  padding: 13px 14px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #183153;
+  font-weight: 700;
+  background: #f4f7fb;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.patient-sidebar-link:hover,
+.patient-sidebar-link.active {
+  transform: translateX(3px);
+  background: #eef2ff;
+  border-color: rgba(30, 58, 138, 0.14);
+}
+
+.patient-sidebar-footer {
+  margin-top: auto;
+  display: grid;
+  gap: 14px;
+}
+
+.patient-sidebar-user {
+  background: #f4f7fb;
+  border: 1px solid #e3e8f1;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.patient-sidebar-user-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-sidebar-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #1e3a8a, #5b21b6);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+}
+
+.patient-sidebar-avatar-placeholder {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.patient-sidebar-user span {
+  display: block;
+  font-weight: 800;
+  color: #183153;
+}
+
+.patient-sidebar-user small {
+  display: block;
+  margin-top: 4px;
+  color: #4c617c;
+  word-break: break-word;
+}
+
+.patient-sidebar-logout {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #1e3a8a, #5b21b6);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .patient-sidebar {
+    position: relative;
+    top: auto;
+    flex: none;
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e3e8f1;
+    box-shadow: 0 12px 28px rgba(26, 40, 68, 0.08);
+  }
+}
