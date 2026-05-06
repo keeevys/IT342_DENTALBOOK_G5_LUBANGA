@@ -67,47 +67,61 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2>Login</h2>
-        
-        {error && <div className="error-message">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Email"
-            />
-          </div>
+    <div className="login-container auth-split">
+      <div className="auth-left">
+        <div className="auth-brand">
+          <h1>Welcome Back</h1>
+          <p className="auth-lead">Securely access patient records and clinic controls.</p>
+        </div>
+        <div className="auth-decor">
+          <span className="dot dot-lg" />
+          <span className="dot dot-sm" />
+          <span className="dot dot-md" />
+        </div>
+      </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Password"
-            />
-          </div>
+      <div className="auth-right">
+        <div className="login-card glass-card">
+          <h2>Sign in</h2>
 
-          <button type="submit" className="btn-login" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+          {error && <div className="error-message">{error}</div>}
 
-        <p className="register-link">
-          Don't Have an Account? <a href="/register">Register here</a>
-        </p>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Email"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button type="submit" className="btn-login" disabled={loading}>
+              {loading ? 'Logging in...' : 'Sign in'}
+            </button>
+          </form>
+
+          <p className="register-link">
+            Don't have an account? <a href="/register">Create one</a>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 .patient-frame {
   min-height: calc(100vh - 88px);
   display: flex;
-  background: #f4f7fb;
+  background: linear-gradient(180deg, #071029 0%, #0b1220 60%);
 }
 
 .patient-content {

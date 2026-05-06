@@ -59,7 +59,7 @@ function PatientProfile() {
 
   return (
     <PatientFrame>
-      <section className="patient-page-card">
+      <section className="patient-page-card patient-profile-page">
         <div className="patient-page-header">
           <p className="patient-page-eyebrow">Profile</p>
           <h1>Your Profile</h1>

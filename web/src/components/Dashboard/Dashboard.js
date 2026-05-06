@@ -39,9 +39,9 @@ function Dashboard() {
     <PatientFrame>
       <section className="patient-page-card patient-book-page">
         <div className="patient-page-header">
-          <p className="patient-page-eyebrow">Select Appointment</p>
-          <h1>Select Calendar</h1>
-          <p>Choose a treatment below to open the booking page.</p>
+          <p className="patient-page-eyebrow">Choose a Treatment</p>
+          <h1>Book an Appointment</h1>
+          <p>Pick a treatment below to continue to booking.</p>
         </div>
 
         <section className="appointment-card appointment-card-full booking-services-section">

@@ -65,75 +65,90 @@ function Register() {
   };
 
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <h2>Register</h2>
-        
-        {error && <div className="error-message">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="fullName">Full Name</label>
-            <input
-              type="text"
-              id="fullName"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              placeholder="Full Name"
-            />
-          </div>
+    <div className="register-container auth-split">
+      <div className="auth-left">
+        <div className="auth-brand">
+          <h1>Join Dentalbook</h1>
+          <p className="auth-lead">Create your account to request appointments and view records.</p>
+        </div>
+        <div className="auth-decor">
+          <span className="dot dot-lg" />
+          <span className="dot dot-sm" />
+        </div>
+      </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Email"
-            />
-          </div>
+      <div className="auth-right">
+        <div className="register-card glass-card">
+          <h2>Create account</h2>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              minLength="6"
-              placeholder="Password"
-            />
-          </div>
+          {error && <div className="error-message">{error}</div>}
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              minLength="6"
-              placeholder="Confirm Password"
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="fullName">Full Name</label>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                placeholder="Full Name"
+              />
+            </div>
 
-          <button type="submit" className="btn-register" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Register'}
-          </button>
-        </form>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Email"
+              />
+            </div>
 
-        <p className="login-link">
-          Already have an account? <a href="/login">Login here</a>
-        </p>
+            <div className="form-group two-cols">
+              <div>
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength="6"
+                  placeholder="Password"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword">Confirm</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  minLength="6"
+                  placeholder="Confirm Password"
+                />
+              </div>
+            </div>
+
+            <button type="submit" className="btn-register" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <p className="login-link">
+            Already registered? <a href="/login">Sign in</a>
+          </p>
+        </div>
       </div>
     </div>
   );
