@@ -15,6 +15,7 @@ public class AppointmentResponse {
     private String status;
     private LocalDateTime createdAt;
     private String message;
+    private boolean notificationPending;
 
     public Long getAppointmentId() {
         return appointmentId;
@@ -86,5 +87,13 @@ public class AppointmentResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isNotificationPending() {
+        return notificationPending;
+    }
+
+    public void setNotificationPending(boolean notificationPending) {
+        this.notificationPending = notificationPending;
     }
 }

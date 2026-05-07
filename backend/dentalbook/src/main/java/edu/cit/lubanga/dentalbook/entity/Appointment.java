@@ -38,6 +38,9 @@ public class Appointment {
     @Column(nullable = false, length = 20)
     private String status;
 
+    @Column(nullable = false)
+    private boolean notificationPending;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -47,6 +50,7 @@ public class Appointment {
         if (status == null || status.isBlank()) {
             status = "BOOKED";
         }
+        notificationPending = false;
     }
 
     public Long getAppointmentId() {
@@ -111,5 +115,13 @@ public class Appointment {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public boolean isNotificationPending() {
+        return notificationPending;
+    }
+
+    public void setNotificationPending(boolean notificationPending) {
+        this.notificationPending = notificationPending;
     }
 }

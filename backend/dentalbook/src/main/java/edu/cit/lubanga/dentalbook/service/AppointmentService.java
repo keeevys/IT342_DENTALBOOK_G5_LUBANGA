@@ -62,6 +62,49 @@ public class AppointmentService {
         return toResponse(savedAppointment, "Appointment cancelled");
     }
 
+    public AppointmentResponse updateAppointmentStatus(Long appointmentId, String status) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+
+        if (optionalAppointment.isEmpty()) {
+            throw new RuntimeException("Appointment not found");
+        }
+
+        Appointment appointment = optionalAppointment.get();
+        String previousStatus = appointment.getStatus();
+        appointment.setStatus(status);
+
+        // If transitioning to APPROVED or REJECTED, mark notification pending if not already sent
+        if (("APPROVED".equalsIgnoreCase(status) || "REJECTED".equalsIgnoreCase(status)) && !appointment.isNotificationPending()) {
+            // mark as pending so client can notify the patient once
+            appointment.setNotificationPending(true);
+        }
+
+        Appointment saved = appointmentRepository.save(appointment);
+        String msg = "Appointment status updated";
+        if (!previousStatus.equalsIgnoreCase(status)) {
+            msg = "Appointment " + status.toLowerCase();
+        }
+        return toResponse(saved, msg);
+    }
+
+    public AppointmentResponse markNotificationDelivered(Long appointmentId, Integer userId) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+
+        if (optionalAppointment.isEmpty()) {
+            throw new RuntimeException("Appointment not found");
+        }
+
+        Appointment appointment = optionalAppointment.get();
+
+        if (!appointment.getUserId().equals(userId)) {
+            throw new RuntimeException("Appointment does not belong to user");
+        }
+
+        appointment.setNotificationPending(false);
+        Appointment saved = appointmentRepository.save(appointment);
+        return toResponse(saved, "Notification marked delivered");
+    }
+
     private AppointmentResponse toResponse(Appointment appointment, String message) {
         AppointmentResponse response = new AppointmentResponse();
         response.setAppointmentId(appointment.getAppointmentId());
@@ -71,6 +114,7 @@ public class AppointmentService {
         response.setAppointmentTime(appointment.getAppointmentTime());
         response.setNotes(appointment.getNotes());
         response.setStatus(appointment.getStatus());
+        response.setNotificationPending(appointment.isNotificationPending());
         response.setCreatedAt(appointment.getCreatedAt());
         response.setMessage(message);
         return response;
