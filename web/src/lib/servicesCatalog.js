@@ -23,10 +23,6 @@ export const SERVICES = {
     description: 'Restore strength and appearance with custom crowns and bridges.',
     image: '/treatments/crowns-bridges.jpg',
   },
-  'Restoration': {
-    description: 'Repair damaged teeth and rebuild your smile with restorative care.',
-    image: '/treatments/teeth-restoration.jpg',
-  },
 };
 
 export default SERVICES;

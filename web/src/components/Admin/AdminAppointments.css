@@ -658,12 +658,17 @@
 
 .calendar-day-count,
 .calendar-day-empty {
+  display: block;
+  min-height: 28px;
   font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
   color: rgba(226, 232, 240, 0.72);
 }
 
 .calendar-day-statuses {
   display: flex;
+  justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
 }

@@ -248,6 +248,14 @@ function BookingPage() {
     setBookingStatus('Appointment booked and submitted for review.');
   };
 
+  const handleServiceSelect = (serviceName) => {
+    setBookingForm((previous) => ({
+      ...previous,
+      service: serviceName,
+    }));
+    setBookingStatus('');
+  };
+
   useEffect(() => {
     if (availableTimeSlots.length === 0) {
       setSelectedTime('');
@@ -274,9 +282,50 @@ function BookingPage() {
             <button type="button" className="booking-back-link" onClick={() => navigate('/dashboard')}>
               ‹ Select Appointment
             </button>
-          <h1>Select Calendar</h1>
+          <h1>Book Appointment</h1>
           <div className="booking-topbar-spacer" />
         </header>
+
+        <section className="booking-services-section">
+          <h2 className="booking-services-title">Choose a Service</h2>
+          <ul className="patient-appointment-list booking-service-list">
+            {serviceNames.map((serviceName) => {
+              const serviceMeta = SERVICES[serviceName] || {};
+              const serviceImage = serviceMeta.image;
+              const initials = serviceName
+                .split(' ')
+                .slice(0, 2)
+                .map((part) => part[0])
+                .join('')
+                .toUpperCase();
+              const isSelectedService = bookingForm.service === serviceName;
+
+              return (
+                <li key={serviceName} className="booking-service-shell">
+                  <button
+                    type="button"
+                    className={`patient-appointment-item service-card booking-service-item ${isSelectedService ? 'selected' : ''}`}
+                    onClick={() => handleServiceSelect(serviceName)}
+                  >
+                    <div className="service-card-media">
+                      {serviceImage ? (
+                        <img src={serviceImage} alt={serviceName} className="service-media-image" />
+                      ) : (
+                        <div className="service-media-placeholder">{initials}</div>
+                      )}
+                    </div>
+
+                    <div className="service-card-body">
+                      <h3>{serviceName}</h3>
+                      <p className="service-description">{serviceMeta.description || 'No description available.'}</p>
+                      <p className="booking-service-state">{isSelectedService ? 'Selected Service' : 'Tap to select'}</p>
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
         <div className="booking-layout">
           <section className="booking-calendar-panel">
@@ -325,23 +374,9 @@ function BookingPage() {
               <p>TIME ZONE: MANILA (GMT+08:00)</p>
             </div>
 
-            <div className="booking-treatment-strip">
-              <div className="booking-treatment-art">
-                <img src={selectedService.image} alt={bookingForm.service} className="booking-treatment-photo" />
-                <div className="booking-treatment-art-badge">
-                  {bookingForm.service
-                    .split(' ')
-                    .slice(0, 2)
-                    .map((part) => part[0])
-                    .join('')
-                    .toUpperCase()}
-                </div>
-              </div>
-
-              <div className="booking-treatment-copy">
-                <h3>{bookingForm.service}</h3>
-                <p>{selectedService.description}</p>
-              </div>
+            <div className="booking-selected-service">
+              <h3>{bookingForm.service}</h3>
+              <p>{selectedService.description}</p>
             </div>
 
             <div className="booking-time-grid" aria-label="Available appointment times">
