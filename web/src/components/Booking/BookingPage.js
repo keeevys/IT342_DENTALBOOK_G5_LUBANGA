@@ -1,3 +1,5 @@
+/* global globalThis */
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getStoredUser, isAdminUser } from '../../lib/accessControl';
@@ -37,7 +39,7 @@ const createTimeSlots = () => {
       break;
     }
 
-    const gap = 20 + Math.floor(Math.random() * 3) * 10;
+    const gap = 40 + Math.floor(Math.random() * 3) * 10;
     const nextMinutes = currentMinutes + gap;
 
     if (currentMinutes < LUNCH_BREAK_START && nextMinutes >= LUNCH_BREAK_START) {
@@ -150,6 +152,14 @@ function BookingPage() {
     };
 
     syncAppointments();
+
+    globalThis.addEventListener('dentalbook-appointments-updated', syncAppointments);
+    globalThis.addEventListener('storage', syncAppointments);
+
+    return () => {
+      globalThis.removeEventListener('dentalbook-appointments-updated', syncAppointments);
+      globalThis.removeEventListener('storage', syncAppointments);
+    };
   }, []);
 
   const calendarDays = useMemo(() => getCalendarDays(viewMonth), [viewMonth]);
@@ -164,6 +174,15 @@ function BookingPage() {
       .filter((appointment) => appointment.status !== 'CANCELLED' && appointment.status !== 'REJECTED')
       .map((appointment) => appointment.time);
   }, [appointments, selectedDate]);
+
+  const hasUserAppointmentOnSelectedDate = useMemo(() => {
+    return appointments.some(
+      (appointment) =>
+        appointment.userEmail === user?.email &&
+        appointment.date === selectedDate &&
+        appointment.status !== 'CANCELLED'
+    );
+  }, [appointments, selectedDate, user?.email]);
 
   const availableTimeSlots = useMemo(() => {
     return serviceSlots.filter((slot) => !bookedTimesForSelectedDate.includes(slot));
@@ -198,6 +217,11 @@ function BookingPage() {
 
     if (!selectedDate || !selectedTime) {
       setBookingStatus('Please select both date and time.');
+      return;
+    }
+
+    if (hasUserAppointmentOnSelectedDate) {
+      setBookingStatus('You can only book one appointment per day. Please choose another date.');
       return;
     }
 
@@ -358,6 +382,10 @@ function BookingPage() {
                 </button>
               </div>
             </form>
+
+            {hasUserAppointmentOnSelectedDate && (
+              <p className="booking-status">You already have an appointment on this date. One booking per day is allowed.</p>
+            )}
 
             {bookingStatus && <p className="booking-status">{bookingStatus}</p>}
           </section>

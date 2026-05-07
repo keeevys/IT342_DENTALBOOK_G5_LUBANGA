@@ -1,3 +1,5 @@
+/* global globalThis */
+
 export const APPOINTMENTS_STORAGE_KEY = 'dentalbook-appointments';
 
 export const readAppointments = () => {
@@ -22,6 +24,7 @@ export const readAppointments = () => {
       time: appointment.time ?? appointment.appointmentTime ?? '',
       notes: appointment.notes ?? '',
       status: appointment.status ?? 'PENDING',
+      notificationPending: appointment.notificationPending ?? false,
       createdAt: appointment.createdAt ?? new Date().toISOString(),
     }));
   } catch {
@@ -31,6 +34,8 @@ export const readAppointments = () => {
 
 export const writeAppointments = (appointments) => {
   localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(appointments));
+
+  globalThis.dispatchEvent(new Event('dentalbook-appointments-updated'));
 };
 
 export const sortAppointments = (appointments) => {

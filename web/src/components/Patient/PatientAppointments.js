@@ -24,7 +24,23 @@ function PatientAppointments() {
     }
 
     const nextAppointments = readAppointments().filter((appointment) => appointment.userEmail === storedUser.email);
-    setAppointments(sortAppointments(nextAppointments));
+    const sorted = sortAppointments(nextAppointments);
+    setAppointments(sorted);
+
+    // Check for one-time notifications (approved/rejected)
+    const notifyList = sorted.filter((a) => a.notificationPending === true);
+    if (notifyList.length > 0) {
+      notifyList.forEach((a) => {
+        // Show a simple one-time alert per appointment — replace with UI toast if desired
+        // eslint-disable-next-line no-alert
+        alert(`Your appointment on ${a.date} at ${a.time} was ${a.status}.`);
+      });
+
+      // Clear notificationPending flags after notifying
+      const allAppointments = readAppointments();
+      const cleared = allAppointments.map((appt) => (appt.userEmail === storedUser.email && appt.notificationPending ? { ...appt, notificationPending: false } : appt));
+      writeAppointments(cleared);
+    }
   }, [navigate]);
 
   const handleCancel = (appointmentId) => {
@@ -65,6 +81,7 @@ function PatientAppointments() {
             {appointments.map((appointment) => {
               const meta = SERVICES[appointment.service] || {};
               const description = meta.description || 'No description available.';
+              const serviceImage = meta.image;
               const initials = (appointment.service || '')
                 .split(' ')
                 .slice(0, 2)
@@ -75,7 +92,11 @@ function PatientAppointments() {
               return (
                 <li key={appointment.id} className="patient-appointment-item service-card">
                   <div className="service-card-media">
-                    <div className="service-media-placeholder">{initials}</div>
+                    {serviceImage ? (
+                      <img src={serviceImage} alt={appointment.service} className="service-media-image" />
+                    ) : (
+                      <div className="service-media-placeholder">{initials}</div>
+                    )}
                   </div>
 
                   <div className="service-card-body">

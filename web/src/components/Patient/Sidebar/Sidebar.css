@@ -43,7 +43,9 @@
 }
 
 .patient-sidebar-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   padding: 13px 14px;
   border-radius: 14px;
   text-decoration: none;
@@ -51,7 +53,27 @@
   font-weight: 700;
   background: #f4f7fb;
   border: 1px solid transparent;
+  width: 100%;
+  gap: 12px;
+  box-sizing: border-box;
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.patient-sidebar-link-label {
+  flex: 0 1 auto;
+}
+
+.patient-sidebar-link-with-badge .patient-sidebar-notification-dot {
+  margin-left: auto;
+}
+
+.patient-sidebar-notification-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+  flex-shrink: 0;
 }
 
 .patient-sidebar-link:hover,

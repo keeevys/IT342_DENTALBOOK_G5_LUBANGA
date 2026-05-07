@@ -150,6 +150,14 @@
   justify-content: center;
 }
 
+.service-media-image {
+  width: 92px;
+  height: 92px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
 .service-media-placeholder {
   width: 92px;
   height: 92px;

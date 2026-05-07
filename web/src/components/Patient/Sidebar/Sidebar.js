@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { clearStoredUser, getStoredUser } from '../../../lib/accessControl';
+import { readAppointments } from '../../../lib/appointmentsStore';
 import { supabase } from '../../../lib/supabaseClient';
 import { readAvatar } from '../../../lib/profileAvatarStore';
 import './Sidebar.css';
@@ -11,6 +12,28 @@ function Sidebar() {
   const navigate = useNavigate();
   const user = getStoredUser();
   const [avatar, setAvatar] = useState(() => readAvatar(user?.email));
+  const [hasNotification, setHasNotification] = useState(false);
+
+  useEffect(() => {
+    const syncNotificationState = () => {
+      const userAppointments = readAppointments().filter((appointment) => appointment.userEmail === user?.email);
+      setHasNotification(
+        userAppointments.some((appointment) => {
+          const status = String(appointment.status || '').toUpperCase();
+          return appointment.notificationPending && (status === 'APPROVED' || status === 'REJECTED');
+        })
+      );
+    };
+
+    syncNotificationState();
+    globalThis.addEventListener('dentalbook-appointments-updated', syncNotificationState);
+    globalThis.addEventListener('storage', syncNotificationState);
+
+    return () => {
+      globalThis.removeEventListener('dentalbook-appointments-updated', syncNotificationState);
+      globalThis.removeEventListener('storage', syncNotificationState);
+    };
+  }, [user?.email]);
 
   useEffect(() => {
     const syncAvatar = () => {
@@ -41,13 +64,14 @@ function Sidebar() {
 
       <nav className="patient-sidebar-nav">
         <NavLink to="/dashboard" className={({ isActive }) => `patient-sidebar-link ${isActive ? 'active' : ''}`}>
-          Book Appointment
+          <span className="patient-sidebar-link-label">Book Appointment</span>
         </NavLink>
-        <NavLink to="/records" className={({ isActive }) => `patient-sidebar-link ${isActive ? 'active' : ''}`}>
-          Records
+        <NavLink to="/records" className={({ isActive }) => `patient-sidebar-link patient-sidebar-link-with-badge ${isActive ? 'active' : ''}`}>
+          <span className="patient-sidebar-link-label">Records</span>
+          {hasNotification && <span className="patient-sidebar-notification-dot" aria-label="Pending appointment update" />}
         </NavLink>
         <NavLink to="/profile" className={({ isActive }) => `patient-sidebar-link ${isActive ? 'active' : ''}`}>
-          Profile
+          <span className="patient-sidebar-link-label">Profile</span>
         </NavLink>
       </nav>
 

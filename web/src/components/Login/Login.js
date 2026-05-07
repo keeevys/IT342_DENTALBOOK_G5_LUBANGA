@@ -70,8 +70,8 @@ function Login() {
     <div className="login-container auth-split">
       <div className="auth-left">
         <div className="auth-brand">
-          <h1>Welcome Back</h1>
-          <p className="auth-lead">Securely access patient records and clinic controls.</p>
+          <h1>DentalBook</h1>
+          <p className="auth-lead">Book an appointment with our dental professionals.</p>
         </div>
         <div className="auth-decor">
           <span className="dot dot-lg" />

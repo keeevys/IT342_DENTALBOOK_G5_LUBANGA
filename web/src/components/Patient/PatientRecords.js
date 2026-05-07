@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PatientFrame from './PatientFrame';
 import { getStoredUser, isAdminUser } from '../../lib/accessControl';
-import { readAppointments, sortAppointments } from '../../lib/appointmentsStore';
+import { readAppointments, sortAppointments, writeAppointments } from '../../lib/appointmentsStore';
 import { SERVICES } from '../../lib/servicesCatalog';
 import './PatientPages.css';
 
@@ -24,7 +24,30 @@ function PatientRecords() {
     }
 
     const patientAppointments = readAppointments().filter((a) => a.userEmail === storedUser.email);
-    setRecords(sortAppointments(patientAppointments));
+
+    const sortedAppointments = sortAppointments(patientAppointments);
+    setRecords(sortedAppointments);
+
+    const acknowledgedAppointments = readAppointments().map((appointment) => {
+      if (appointment.userEmail !== storedUser.email) {
+        return appointment;
+      }
+
+      if (!appointment.notificationPending) {
+        return appointment;
+      }
+
+      if (String(appointment.status || '').toUpperCase() !== 'APPROVED' && String(appointment.status || '').toUpperCase() !== 'REJECTED') {
+        return appointment;
+      }
+
+      return {
+        ...appointment,
+        notificationPending: false,
+      };
+    });
+
+    writeAppointments(acknowledgedAppointments);
   }, [navigate]);
 
   return (
@@ -43,6 +66,7 @@ function PatientRecords() {
             {records.map((appointment) => {
               const meta = SERVICES[appointment.service] || {};
               const description = meta.description || '';
+              const serviceImage = meta.image;
               const initials = (appointment.service || '')
                 .split(' ')
                 .slice(0, 2)
@@ -53,7 +77,11 @@ function PatientRecords() {
               return (
                 <li key={appointment.id} className="patient-appointment-item service-card">
                   <div className="service-card-media">
-                    <div className="service-media-placeholder">{initials}</div>
+                    {serviceImage ? (
+                      <img src={serviceImage} alt={appointment.service} className="service-media-image" />
+                    ) : (
+                      <div className="service-media-placeholder">{initials}</div>
+                    )}
                   </div>
 
                   <div className="service-card-body">
